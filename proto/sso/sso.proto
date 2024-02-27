@@ -1,0 +1,49 @@
+syntax = "proto3"; // используем 3 версию
+
+package auth;  // пространство имён (package <name> определяет имя пакета для сгенерированных файлов)
+// Go — сгенерированный типы окажется в директории foo/bar в пакете package bar.
+// Можно переопределить это поведение, добавив директиву option go_package = "github.com/user/project/mypb";.
+
+option go_package = "bbt-t.sso.v1;ssov1";
+
+
+//    Использование тегов 1 и 2 в данном контексте означает,
+//    что при сериализации и десериализации сообщения RegisterRequest
+//    в формате Protocol Buffers каждому полю будет присвоен соответствующий тег.
+//    Теги помогают идентифицировать каждое поле в сообщении и обеспечивают его
+//    корректное десериализацию, даже если порядок полей изменится или
+//    какие-то поля будут опущены.
+
+
+// Определяем формат ввода и вывода
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+}
+message RegisterResponse {
+  int64 user_id = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  int64  app_id = 3;  // ID приложения в которое человек логинится
+}
+message LoginResponse {
+  string token = 1;
+}
+
+message IsAdminRequest {
+  int64 user_id = 1;
+}
+message IsAdminResponse {
+  bool is_admin = 1;
+}
+// сервис по аутернитификации, описываем эндпоинты (ручки)
+service Auth {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
+}
+
+
